@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class ObjectSpawn : MonoBehaviour
 {
-    public GameObject objectPrefab;      // Префаб об'єкта
-    public float respawnTime = 1.0f;     // Час між спавнами
-    private Camera _mainCamera;          // Основна камера
-    public float innerRadius = 5f;       // Внутрішній радіус спавну
-    public float outerRadius = 10f;      // Зовнішній радіус спавну
-    public bool keepMomentum = false;    // Чи зберігати імпульс при спавні
-    public int poolSize = 10;            // Розмір пулу
-    private GameObject[] _objectPool;    // Пул об'єктів
-    private int _currentIndex = 0;       // Поточний індекс в пулі
-    public float delaySeconds = 5f;      // Затримка перед першим спавном
-    public bool enableLogs = true;       // Прапорець для логування
-    public bool EnableGizmos = true;     // Прапорець для візуалізації Gizmos
+    public GameObject objectPrefab;      // Object prefab
+    public float respawnTime = 1.0f;     // Time between spawns
+    private Camera _mainCamera;          // Main camera
+    public float innerRadius = 5f;       // Inner spawn radius
+    public float outerRadius = 10f;      // Outer spawn radius
+    public bool keepMomentum = false;    // Whether to keep momentum upon spawn
+    public int poolSize = 10;            // Pool size
+    private GameObject[] _objectPool;    // Object pool
+    private int _currentIndex = 0;       // Current index in the pool
+    public float delaySeconds = 5f;      // Delay before first spawn
+    public bool enableLogs = true;       // Flag for logging
+    public bool EnableGizmos = true;     // Flag for Gizmos visualization
 
     void Start()
     {
@@ -43,7 +43,7 @@ public class ObjectSpawn : MonoBehaviour
             return;
         }
 
-        // Ініціалізація пулу об'єктів
+        // Initialize object pool
         _objectPool = new GameObject[poolSize];
         for (int i = 0; i < poolSize; i++)
         {
@@ -57,7 +57,7 @@ public class ObjectSpawn : MonoBehaviour
     private Vector2 GetSpawnPosition()
     {
         float distance = Random.Range(innerRadius, outerRadius);
-        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad; // Кут у радіанах
+        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad; // Angle in radians
         Vector2 spawnDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
         return (Vector2)_mainCamera.transform.position + spawnDirection;
     }
@@ -73,7 +73,7 @@ public class ObjectSpawn : MonoBehaviour
         GameObject currentObject = _objectPool[_currentIndex];
         _currentIndex = (_currentIndex + 1) % poolSize;
 
-        // Перевіряємо відстань між об'єктом і камерою
+        // Check distance between object and camera
         float distanceToCamera = Vector2.Distance(currentObject.transform.position, _mainCamera.transform.position);
 
         if (distanceToCamera <= outerRadius && currentObject.activeSelf)
@@ -82,27 +82,27 @@ public class ObjectSpawn : MonoBehaviour
             {
                 Debug.Log("Object is within outerRadius and active. Skipping reposition.");
             }
-            return; // Якщо об'єкт всередині outerRadius і активний, не переміщаємо
+            return; // If the object is inside the outerRadius and active, don't reposition it
         }
 
-        // Отримуємо нову позицію для спавну
+        // Get new spawn position
         Vector2 spawnPosition = GetSpawnPosition();
         currentObject.transform.position = spawnPosition;
 
-        // Додаємо випадкову швидкість при першому спавні
+        // Add random speed on first spawn
         Rigidbody2D rb = currentObject.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            // Випадкова лінійна швидкість
+            // Random linear velocity
             rb.linearVelocity = new Vector2(Random.Range(-3f, 3f), Random.Range(-3f, 3f)); 
-            rb.angularVelocity = Random.Range(-10f, 10f); // Випадкова кутова швидкість
+            rb.angularVelocity = Random.Range(-10f, 10f); // Random angular velocity
         }
 
-        // Якщо не зберігаємо імпульс, обнуляємо швидкість
+        // If momentum is not kept, reset velocity
         if (!keepMomentum)
         {
-            rb.linearVelocity = Vector2.zero; // Обнуляємо лінійну швидкість
-            rb.angularVelocity = 0f;    // Обнуляємо кутову швидкість
+            rb.linearVelocity = Vector2.zero; // Reset linear velocity
+            rb.angularVelocity = 0f;    // Reset angular velocity
         }
 
         currentObject.SetActive(true);
