@@ -7,7 +7,7 @@ Efficient Object Pooling: Pre-instantiate objects to minimize runtime performanc
 Debug Visualization: Leverage Gizmos in the Unity Editor to visualize spawn areas effectively.<br>
 Detailed Logging: Track spawning events with optional console logs.<br>
 
-**Script Settings** <br>
+# Script Settings
 **Object Prefab** (GameObject) <br>
   The prefab of the object that will be spawned. <br>
 **Respawn Time** (float) <br>
@@ -26,6 +26,10 @@ Detailed Logging: Track spawning events with optional console logs.<br>
   Whether to log messages about object spawns to the console. <br>
 **Enable Gizmos** (bool) <br>
   Whether to show visual indicators (Gizmos) of the spawn radii in the editor. <br>
+**randomSize** (bool) <br>
+  Whether to spawn objects with random size <br>
+**Size Range** (Vector2) <br> 
+  Defines the range of possible sizes for spawned objects (minimum and maximum scale). <br>
 
 # How to use
 How to Use<br>
