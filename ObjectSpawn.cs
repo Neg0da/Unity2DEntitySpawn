@@ -17,6 +17,7 @@ public class ObjectSpawn : MonoBehaviour
     public bool enableLogs = true;       // Flag for logging
     public bool EnableGizmos = true;     // Flag for Gizmos visualization
     public bool EnableRotation = true;
+    public bool randomRotation = false; // Flag for rotation
 
     // Random size settings
     public bool randomSize = false;      // Enable random size for objects
@@ -55,14 +56,18 @@ public class ObjectSpawn : MonoBehaviour
         for (int i = 0; i < poolSize; i++)
         {
             _objectPool[i] = Instantiate(objectPrefab, Vector3.zero, Quaternion.identity, transform);
-                    // Set random size if enabled
+            float _randomScale = Random.Range(sizeRange.x, sizeRange.y);
             if (randomSize)
-            {
-                float randomScale = Random.Range(sizeRange.x, sizeRange.y);
-                _objectPool[i].transform.localScale = Vector3.one * randomScale;
-            }
+                {
+                _objectPool[i].transform.localScale = Vector3.one * _randomScale;
+                }
+            if (randomRotation)
+                {
+                    _objectPool[i].transform.rotation = Quaternion.Euler(0f, 0f, _randomScale * 5);
+                }
             _objectPool[i].SetActive(false);
         }
+        
 
         StartCoroutine(SpawnRoutine());
     }
