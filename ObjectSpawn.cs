@@ -16,7 +16,6 @@ public class ObjectSpawn : MonoBehaviour
     public float delaySeconds = 5f;      // Delay before first spawn
     public bool enableLogs = true;       // Flag for logging
     public bool EnableGizmos = true;     // Flag for Gizmos visualization
-    public bool EnableRotation = true;
     public bool randomRotation = false; // Flag for rotation
 
     // Random size settings
@@ -63,7 +62,7 @@ public class ObjectSpawn : MonoBehaviour
                 }
             if (randomRotation)
                 {
-                    _objectPool[i].transform.rotation = Quaternion.Euler(0f, 0f, _randomScale * 5);
+                _objectPool[i].transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Pow(_randomScale, 2) + 5);
                 }
             _objectPool[i].SetActive(false);
         }

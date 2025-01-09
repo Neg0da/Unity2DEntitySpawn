@@ -1,6 +1,11 @@
 # Unity2DEntitySpawn
 Welcome to **Unity2DEntitySpawn**, a repository featuring a robust script for dynamically spawning entities in a 2D Unity game. Designed with versatility, efficiency, and ease of use in mind, this tool is essential for Unity 2D developers seeking streamlined spawning functionality.
 
+# How To Use
+1. Create an empty object and add a new component named ObjectSpawn.
+2. Add the prefab object to be spawned and set up other settings.
+3. Run the game.
+
 # Key Features
 Customizable Spawn Settings: Tailor spawn behavior with adjustable parameters like spawn radius, timing, and object pooling.<br>
 Efficient Object Pooling: Pre-instantiate objects to minimize runtime performance costs.<br>
@@ -30,9 +35,3 @@ Detailed Logging: Track spawning events with optional console logs.<br>
   Whether to spawn objects with random size
 ## Size Range** (Vector2)
   Defines the range of possible sizes for spawned objects (minimum and maximum scale).
-
-# How to use
-How to Use<br>
-Attach the script to a GameObject in your Unity project.<br>
-Assign the required prefab and configure settings via the Inspector.<br>
-Press Play to see objects spawn dynamically based on your configuration.<br>
