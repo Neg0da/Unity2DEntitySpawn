@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.1.3.2] - 2025-01-09
+### Changed
+- Random rotation can now be enabled with random size set to 0, 0.
+
+## [0.1.3.1] - 2025-01-09
+### Added
+- Added random rotation
+
 ## [0.1.3] - 2025-01-04
 ### Added
 - Added changelog.
