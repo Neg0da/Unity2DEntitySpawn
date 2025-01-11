@@ -7,7 +7,7 @@ public class ObjectSpawn : MonoBehaviour
     public GameObject objectPrefab;      // Object prefab
     public float respawnTime = 0.2f;     // Time between spawns
     private Camera _mainCamera;          // Main camera
-    public float innerRadius = 12f;       // Inner spawn radius
+    public float innerRadius = 12f;      // Inner spawn radius
     public float outerRadius = 20f;      // Outer spawn radius
     public bool keepMomentum = false;    // Whether to keep momentum upon spawn
     public int poolSize = 10;            // Pool size
@@ -21,6 +21,9 @@ public class ObjectSpawn : MonoBehaviour
     // Random size settings
     public bool randomSize = false;      // Enable random size for objects
     public Vector2 sizeRange = new Vector2(1f, 4f); // Range for random sizes
+
+    // New variable to control spawn duration
+    public float spawnDuration = 10f;    // Maximum time for spawning objects
 
     void Start()
     {
@@ -57,17 +60,15 @@ public class ObjectSpawn : MonoBehaviour
             _objectPool[i] = Instantiate(objectPrefab, Vector3.zero, Quaternion.identity, transform);
             float _randomScale = Random.Range(sizeRange.x, sizeRange.y);
             if (randomSize)
-                {
+            {
                 _objectPool[i].transform.localScale = Vector3.one * _randomScale;
-                }
+            }
             if (randomRotation)
-                {
+            {
                 _objectPool[i].transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Pow(_randomScale, 2) + 5);
-                }
+            }
             _objectPool[i].SetActive(false);
         }
-        
-
         StartCoroutine(SpawnRoutine());
     }
 
@@ -76,16 +77,26 @@ public class ObjectSpawn : MonoBehaviour
 #if UNITY_EDITOR
         if (enableLogs)
         {
-            Debug.Log("Waiting for the first spawn...");
+            Debug.Log("Waiting for the first spawn " + delaySeconds + " seconds");
         }
 #endif
         yield return new WaitForSeconds(delaySeconds);
 
-        while (true)
+        float elapsedTime = 0f; // Timer to track elapsed time
+
+        while (elapsedTime < spawnDuration)
         {
             SpawnPrefabObject();
             yield return new WaitForSeconds(respawnTime);
+            elapsedTime += respawnTime; // Increment elapsed time
         }
+
+#if UNITY_EDITOR
+        if (enableLogs)
+        {
+            Debug.Log("Spawning stopped after " + spawnDuration + " seconds.");
+        }
+#endif
     }
 
     private void SpawnPrefabObject()
@@ -117,7 +128,6 @@ public class ObjectSpawn : MonoBehaviour
         Vector2 spawnPosition = GetSpawnPosition();
         currentObject.transform.position = spawnPosition;
 
-
         // Add random speed on first spawn
         Rigidbody2D rb = currentObject.GetComponent<Rigidbody2D>();
         if (rb != null)
@@ -131,7 +141,7 @@ public class ObjectSpawn : MonoBehaviour
         if (!keepMomentum)
         {
             rb.linearVelocity = Vector2.zero; // Reset linear velocity
-            rb.angularVelocity = 0f;    // Reset angular velocity
+            rb.angularVelocity = 0f;         // Reset angular velocity
         }
 
         currentObject.SetActive(true);
