@@ -1,5 +1,7 @@
 # Unity2DEntitySpawn
-Welcome to **Unity2DEntitySpawn**, a repository featuring a robust script for dynamically spawning entities in a 2D Unity game. Designed with versatility, efficiency, and ease of use in mind, this tool is essential for Unity 2D developers seeking streamlined spawning functionality.
+Welcome to **Unity2DEntitySpawn**, a repository featuring a robust script for dynamically spawning entities in a 2D Unity game. Designed with versatility, efficiency, and ease of use in mind, this tool is essential for Unity 2D developers seeking streamlined spawning functionality. <br>
+Script was created on Unity Engine ver. 6000.0.29f1 LTS
+
 
 # How To Use
 1. Create an empty object in your scene and add a new component named `ObjectSpawn`.
