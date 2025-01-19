@@ -10,7 +10,7 @@ public class ObjectSpawn : MonoBehaviour
     public float respawnTime = 0.2f;       // Time between spawns
     public float delaySeconds = 5f;        // Delay before first spawn
     public bool enableLogs = true;         // Flag for logging
-    public bool EnableGizmos = true;       // Flag for Gizmos visualization
+    public bool enableGizmos = true;       // Flag for Gizmos visualization
     public bool randomRotation = false;    // Flag for rotation
 
     // ===============================
@@ -43,22 +43,17 @@ public class ObjectSpawn : MonoBehaviour
         Spawning,
         Deactivating
     }
-    [SerializeField] private ObjectState afterDurationState = ObjectState.Spawning; // Delete objects after end of Spawn Duration
+    [SerializeField] private ObjectState _afterDurationState = ObjectState.Spawning; // State after duration ends
 
     // ===============================
     // UNITY METHODS
     // ===============================
-    void Start()
+    private void Start()
     {
         _mainCamera = Camera.main;
 
-        // Check for critical errors
         ValidateInputs();
-
-        // Initialize object pool only once
         InitializeObjectPool();
-
-        // Start spawning routine
         StartCoroutine(SpawnRoutine());
     }
 
@@ -75,18 +70,16 @@ public class ObjectSpawn : MonoBehaviour
 #endif
         yield return new WaitForSeconds(delaySeconds);
 
-        float elapsedTime = 0f; // Timer to track spawn duration
+        float elapsedTime = 0f;
 
         while (spawnDuration == 0 || elapsedTime < spawnDuration)
         {
             SpawnPrefabObject();
             yield return new WaitForSeconds(respawnTime);
-
-            elapsedTime += respawnTime; // Increment the elapsed time
+            elapsedTime += respawnTime;
         }
 
-        // Start deactivating objects when spawn duration ends
-        if (afterDurationState == ObjectState.Deactivating)
+        if (_afterDurationState == ObjectState.Deactivating)
         {
             StartCoroutine(DeactivateObjects());
         }
@@ -97,13 +90,12 @@ public class ObjectSpawn : MonoBehaviour
     // ===============================
     private IEnumerator DeactivateObjects()
     {
-        bool allDeactivated = true; // Flag to check if all objects were deactivated
+        bool allDeactivated = true;
 
         foreach (var obj in _objectPool)
         {
             if (obj.activeSelf)
             {
-                // Check if the object is outside outerRadius
                 float distanceToCamera = Vector2.Distance(obj.transform.position, _mainCamera.transform.position);
 
                 if (distanceToCamera > outerRadius)
@@ -124,15 +116,13 @@ public class ObjectSpawn : MonoBehaviour
                         Debug.Log($"Object {obj.name} is inside outerRadius and won't be deactivated.");
                     }
 #endif
-                    allDeactivated = false; // Set flag to false if any object is still active
+                    allDeactivated = false;
                 }
             }
 
-            // Wait before deactivating the next one
             yield return new WaitForSeconds(respawnTime);
         }
 
-        // Check if all objects have been deactivated
         if (allDeactivated)
         {
 #if UNITY_EDITOR
@@ -144,7 +134,6 @@ public class ObjectSpawn : MonoBehaviour
         }
         else
         {
-            // Continue deactivating objects if some are still active
             StartCoroutine(DeactivateObjects());
         }
     }
@@ -154,7 +143,6 @@ public class ObjectSpawn : MonoBehaviour
     // ===============================
     private void SpawnPrefabObject()
     {
-        // Ensure currentIndex is within bounds
         if (_currentIndex < 0 || _currentIndex >= _objectPool.Length)
         {
             Debug.LogError("Invalid currentIndex! Resetting to 0.");
@@ -164,20 +152,16 @@ public class ObjectSpawn : MonoBehaviour
         GameObject currentObject = _objectPool[_currentIndex];
         _currentIndex = (_currentIndex + 1) % poolSize;
 
-        // Check if object is within outerRadius and is already active
         if (IsObjectActiveAndWithinRadius(currentObject))
         {
             return;
         }
 
-        // Get new spawn position and set object position
         Vector2 spawnPosition = GetSpawnPosition();
         currentObject.transform.position = spawnPosition;
 
-        // Add random speed on spawn
         InitializeObjectPhysics(currentObject);
 
-        // Activate the object
         currentObject.SetActive(true);
 
 #if UNITY_EDITOR
@@ -220,7 +204,6 @@ public class ObjectSpawn : MonoBehaviour
 
     private void InitializeObjectPool()
     {
-        // Only initialize the pool once
         if (_objectPool == null)
         {
             _objectPool = new GameObject[poolSize];
@@ -271,10 +254,9 @@ public class ObjectSpawn : MonoBehaviour
         if (rb != null)
         {
             rb.linearVelocity = new Vector2(Random.Range(-3f, 3f), Random.Range(-3f, 3f));
-            rb.angularVelocity = Random.Range(-10f, 10f); // Random angular velocity
+            rb.angularVelocity = Random.Range(-10f, 10f);
         }
 
-        // If momentum is not kept, reset velocities
         if (!keepMomentum)
         {
             rb.linearVelocity = Vector2.zero;
@@ -285,7 +267,7 @@ public class ObjectSpawn : MonoBehaviour
     private Vector2 GetSpawnPosition()
     {
         float distance = Random.Range(innerRadius, outerRadius);
-        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad; // Angle in radians
+        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         Vector2 spawnDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
         return (Vector2)_mainCamera.transform.position + spawnDirection;
     }
@@ -293,7 +275,7 @@ public class ObjectSpawn : MonoBehaviour
     private void OnDrawGizmos()
     {
 #if UNITY_EDITOR
-        if (EnableGizmos)
+        if (enableGizmos)
         {
             Camera currentCamera = Camera.main;
 

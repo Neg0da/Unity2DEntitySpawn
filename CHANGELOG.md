@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.1.4.1] - 2025-01-19
+### Fixed
+- Fixed problems with private functions.
+
 ## [0.1.4] - 2025-01-12
 ### Changed
 - Optimized the object pool management by pre-instantiating objects at the start, reducing the need for object instantiation during runtime.
